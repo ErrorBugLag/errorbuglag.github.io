@@ -1,50 +1,96 @@
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ErrorBugLag - Ебанутый разраб</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: #f0f0f0;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #ff6b6b;
-        }
-        a {
-            color: #4ecdc4;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>ErrorBugLag</h1>
-        <p>Здарова, ублюдки! Я ErrorBugLag - ебанутый разраб, который творит хуйню и называет это кодом.</p>
-        <p>Мои скиллы:</p>
-        <ul>
-            <li>Писать говнокод быстрее, чем ты моргаешь</li>
-            <li>Находить баги там, где их нет</li>
-            <li>Превращать простые задачи в пиздец</li>
-        </ul>
-        <p>Найти меня можно тут:</p>
-        <ul>
-            <li><a href="https://github.com/errorbuglag">GitHub</a> - там, где я пушу свой высер</li>
-            <li><a href="https://t.me/errorbuglag">Telegram</a> - тут я ною о том, как всё хуёво</li>
-        </ul>
-        <p>Если тебе нужен разраб, который превратит твой проект в полную жопу - я твой выбор!</p>
-    </div>
-</body>
-</html>
+  <!DOCTYPE html>
+  <html lang="ru">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>ErrorBugLag - Ебанутый разраб</title>
+      <style>
+          body, html {
+              height: 100%;
+              margin: 0;
+              font-family: 'Arial', sans-serif;
+              color: #fff;
+              overflow-x: hidden;
+              background: url('bg.jpg') no-repeat center center fixed;
+              background-size: cover;
+          }
+          .glass-container {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+              backdrop-filter: blur(10px);
+              background: rgba(255, 255, 255, 0.1);
+          }
+          .content {
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 15px;
+              padding: 40px;
+              box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+              backdrop-filter: blur(4px);
+              -webkit-backdrop-filter: blur(4px);
+              border: 1px solid rgba(255, 255, 255, 0.18);
+              max-width: 800px;
+              width: 90%;
+          }
+          h1 {
+              font-size: 3em;
+              margin-bottom: 20px;
+              color: #ff6b6b;
+              text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+          }
+          .avatar {
+              width: 200px;
+              height: 200px;
+              border-radius: 50%;
+              margin: 0 auto 30px;
+              display: block;
+              border: 5px solid rgba(255, 107, 107, 0.5);
+              animation: pulse 2s infinite;
+              box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+          }
+          @keyframes pulse {
+              0% { transform: scale(1); }
+              50% { transform: scale(1.1); }
+              100% { transform: scale(1); }
+          }
+          a {
+              color: #4ecdc4;
+              text-decoration: none;
+              transition: color 0.3s;
+          }
+          a:hover {
+              color: #ff6b6b;
+              text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+          }
+      </style>
+  </head>
+  <body>
+      <div class="glass-container">
+          <div class="content">
+              <img src="https://thispersondoesnotexist.com/" alt="ErrorBugLag" class="avatar">
+              <h1>ErrorBugLag</h1>
+              <p>Здарова, ублюдки! Я ErrorBugLag - ебанутый разраб, который творит хуйню и называет это кодом.</p>
+              <p>Мои скиллы:</p>
+              <ul>
+                  <li>Писать говнокод быстрее, чем ты моргаешь</li>
+                  <li>Находить баги там, где их нет</li>
+                  <li>Превращать простые задачи в пиздец</li>
+              </ul>
+              <p>Найти меня можно тут:</p>
+              <ul>
+                  <li><a href="errorbuglag">Discord</a> - тут я зависаю 24/7</li>
+                  <li><a href="https://t.me/errorbuglag">Telegram</a> - тут я ною о том, как всё хуёво</li>
+              </ul>
+              <p>Если тебе нужен разраб, который превратит твой проект в полную жопу - я твой выбор!</p>
+          </div>
+      </div>
+      <script>
+          document.addEventListener('mousemove', (e) => {
+              const moveX = (e.clientX - window.innerWidth / 2) / 100;
+              const moveY = (e.clientY - window.innerHeight / 2) / 100;
+              document.querySelector('.content').style.transform = `translate(${moveX}px, ${moveY}px)`;
+          });
+      </script>
+  </body>
+  </html>
