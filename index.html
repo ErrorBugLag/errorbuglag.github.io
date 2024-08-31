@@ -32,6 +32,7 @@
               border: 1px solid rgba(255, 255, 255, 0.18);
               max-width: 800px;
               width: 90%;
+              transition: transform 0.1s ease-out;
           }
           h1 {
               font-size: 3em;
@@ -79,18 +80,26 @@
               </ul>
               <p>Найти меня можно тут:</p>
               <ul>
-                  <li><a href="errorbuglag">Discord</a> - тут я зависаю 24/7</li>
+                  <p>Discord - ErrorBugLag</p>
                   <li><a href="https://t.me/errorbuglag">Telegram</a> - тут я ною о том, как всё хуёво</li>
               </ul>
               <p>Если тебе нужен разраб, который превратит твой проект в полную жопу - я твой выбор!</p>
           </div>
       </div>
       <script>
-          document.addEventListener('mousemove', (e) => {
-              const moveX = (e.clientX - window.innerWidth / 2) / 100;
-              const moveY = (e.clientY - window.innerHeight / 2) / 100;
-              document.querySelector('.content').style.transform = `translate(${moveX}px, ${moveY}px)`;
-          });
+        document.addEventListener('mousemove', (e) => {
+            const content = document.querySelector('.content');
+            const rect = content.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const maxRotation = 5; // Максимальный угол наклона в градусах
+            
+            const rotateY = ((e.clientX - centerX) / (window.innerWidth / 2)) * maxRotation;
+            const rotateX = -((e.clientY - centerY) / (window.innerHeight / 2)) * maxRotation;
+            
+            content.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
       </script>
   </body>
   </html>
