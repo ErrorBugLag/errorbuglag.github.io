@@ -196,6 +196,15 @@ h2 {
     width: 90%;
 }
 
+.popup a {
+    color: #00BFFF;
+    text-decoration: none;
+}
+
+.popup a:hover {
+    text-decoration: underline;
+}
+
 .popup h3, .popup h4 {
     margin-bottom: 10px;
 }

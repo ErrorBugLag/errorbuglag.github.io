@@ -1,3 +1,6 @@
+let apiKey = localStorage.getItem('apiKey') || '';
+const apiKeyInput = document.getElementById('api-key-input');
+
 async function query(data) {
     const response = await fetch(
         "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev",
@@ -96,11 +99,14 @@ document.getElementById('generate').addEventListener('click', async () => {
     }
 });
 
-document.getElementById('api-key-btn').addEventListener('click', () => {
-    document.getElementById('api-key-popup').classList.remove('hidden');
+document.getElementById('save-api-key').addEventListener('click', () => {
+    apiKey = apiKeyInput.value.trim();
+    localStorage.setItem('apiKey', apiKey);
+    document.getElementById('api-key-popup').classList.add('hidden');
 });
 
-document.getElementById('save-api-key').addEventListener('click', () => {
-    apiKey = document.getElementById('api-key-input').value.trim();
-    document.getElementById('api-key-popup').classList.add('hidden');
+document.getElementById('api-key-btn').addEventListener('click', () => {
+    apiKey = localStorage.getItem('apiKey') || '';
+    apiKeyInput.value = apiKey;
+    document.getElementById('api-key-popup').classList.remove('hidden');
 });
