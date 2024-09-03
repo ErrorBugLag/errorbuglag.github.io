@@ -31,7 +31,9 @@
                 <label for="num_inference_steps">Inference Steps:</label>
                 <input type="range" id="num_inference_steps" min="1" max="50" step="1" value="4">
                 <span id="num_inference_steps-value">4</span>
-            </div>
+                <span class="info-icon">ℹ️</span>
+                <div class="info-popup">Количество шагов для генерации изображения. Больше шагов = лучше качество, но дольше генерация.</div>
+            </div>            
             <button id="generate">Сгенерировать</button>
             <button id="api-key-btn" class="api-key-btn">API key</button>
         </div>        

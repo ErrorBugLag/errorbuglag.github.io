@@ -309,3 +309,29 @@ h2 {
 .popup.hide .popup-content {
     animation: fadeOutScale 0.3s forwards;
 }
+
+.setting {
+    position: relative;
+}
+
+.info-icon {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.info-popup {
+    display: none;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+    max-width: 200px;
+    top: 100%;
+    left: 0;
+}
+
+.info-icon:hover + .info-popup {
+    display: block;
+}

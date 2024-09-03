@@ -163,3 +163,21 @@ document.getElementById('api-key-popup').addEventListener('click', (e) => {
         hidePopup();
     }
 });
+
+document.querySelectorAll('.info-icon').forEach(icon => {
+    icon.addEventListener('mouseenter', () => {
+        const popup = icon.nextElementSibling;
+        popup.style.display = 'block';
+        setTimeout(() => {
+            popup.style.opacity = '1';
+        }, 10);
+    });
+
+    icon.addEventListener('mouseleave', () => {
+        const popup = icon.nextElementSibling;
+        popup.style.opacity = '0';
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 300);
+    });
+});
