@@ -23,7 +23,7 @@ function generateRandomSeed() {
 
 function populateResolutionOptions(selectId) {
     const select = document.getElementById(selectId);
-    for (let i = 256; i <= 2048; i += 8) {
+    for (let i = 256; i <= 2048; i += 32) {
         const option = document.createElement('option');
         option.value = i;
         option.textContent = i;
