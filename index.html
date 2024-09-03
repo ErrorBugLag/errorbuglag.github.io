@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор картинок</title>
+    <title>ErrorBugLag FLUX.1</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -13,23 +13,25 @@
         <div class="glass-panel settings">
             <h2>Настройки</h2>
             <input type="text" id="prompt" placeholder="Опишите желаемое изображение">
+            <div class="model-selection">
+                <div class="model-header">FLUX.1</div>
+                <div class="model-options">
+                    <div class="model-option" data-model="dev">[dev]</div>
+                    <div class="model-option" data-model="schnell">[schnell]</div>
+                </div>
+            </div>                    
             <div class="setting resolution-setting">
                 <label for="resolution">Разрешение:</label>
                 <div class="resolution-inputs">
-                    <select id="width" size="3"></select>
+                    <input type="number" id="width" min="1" max="4096" value="512">
                     <span>x</span>
-                    <select id="height" size="3"></select>
+                    <input type="number" id="height" min="1" max="4096" value="512">
                 </div>
-            </div>                                     
-            <div class="setting">
-                <label for="guidance_scale">Guidance Scale:</label>
-                <input type="range" id="guidance_scale" min="0" max="100" step="1" value="10">
-                <span id="guidance_scale-value">5</span>
-            </div>
+            </div>            
             <div class="setting">
                 <label for="num_inference_steps">Inference Steps:</label>
-                <input type="range" id="num_inference_steps" min="1" max="100" step="1" value="30">
-                <span id="num_inference_steps-value">50</span>
+                <input type="range" id="num_inference_steps" min="1" max="50" step="1" value="4">
+                <span id="num_inference_steps-value">4</span>
             </div>
             <button id="generate">Сгенерировать</button>
             <button id="api-key-btn" class="api-key-btn">API key</button>
@@ -37,6 +39,8 @@
         <div class="glass-panel image-container">
             <img id="result" src="" alt="">
             <div id="loader" class="loader hidden"><i class="fas fa-spinner fa-spin"></i></div>
+            <div id="image-info" class="image-info"></div>
+            <div id="generation-time" class="generation-time"></div>
         </div>
     </div>
     <div id="api-key-popup" class="popup hidden">

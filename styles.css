@@ -250,7 +250,7 @@ h2 {
     100% { transform: rotate(360deg); }
 }
 
-#generate:hover {
+#generate:hover, #generate-default:hover {
     animation: pulse 1s infinite;
 }
 
@@ -354,4 +354,69 @@ button {
 
 .popup.hide .popup-content {
     animation: fadeOutScale 0.3s forwards;
+}
+
+#generate-default {
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    margin-top: 10px;
+}
+
+.image-info {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.model-selection {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.model-header {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.model-options {
+    display: flex;
+}
+
+.model-option {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.model-option:hover, .model-option.selected {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.generation-time {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #fff;
+    text-align: center;
+}
+
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    color: #fff;
+    z-index: 10;
 }
