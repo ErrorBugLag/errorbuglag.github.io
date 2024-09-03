@@ -23,7 +23,7 @@ function generateRandomSeed() {
 
 function populateResolutionOptions(selectId) {
     const select = document.getElementById(selectId);
-    for (let i = 128; i <= 2048; i += 32) {
+    for (let i = 256; i <= 2048; i += 8) {
         const option = document.createElement('option');
         option.value = i;
         option.textContent = i;
@@ -99,14 +99,36 @@ document.getElementById('generate').addEventListener('click', async () => {
     }
 });
 
-document.getElementById('save-api-key').addEventListener('click', () => {
-    apiKey = apiKeyInput.value.trim();
-    localStorage.setItem('apiKey', apiKey);
-    document.getElementById('api-key-popup').classList.add('hidden');
-});
+function showPopup() {
+    const popup = document.getElementById('api-key-popup');
+    popup.classList.remove('hidden', 'hide');
+    popup.classList.add('show');
+}
+
+function hidePopup() {
+    const popup = document.getElementById('api-key-popup');
+    popup.classList.add('hide');
+    popup.addEventListener('animationend', function() {
+        popup.classList.add('hidden');
+        popup.classList.remove('show', 'hide');
+    }, { once: true });
+}
 
 document.getElementById('api-key-btn').addEventListener('click', () => {
     apiKey = localStorage.getItem('apiKey') || '';
     apiKeyInput.value = apiKey;
-    document.getElementById('api-key-popup').classList.remove('hidden');
+    showPopup();
 });
+
+document.getElementById('save-api-key').addEventListener('click', () => {
+    apiKey = apiKeyInput.value.trim();
+    localStorage.setItem('apiKey', apiKey);
+    hidePopup();
+});
+
+document.getElementById('api-key-popup').addEventListener('click', (e) => {
+    if (e.target.id === 'api-key-popup') {
+        hidePopup();
+    }
+});
+
