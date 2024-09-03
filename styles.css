@@ -16,6 +16,7 @@ body {
     padding: 20px;
     box-sizing: border-box;
     gap: 20px;
+    justify-content: space-between;
 }
 
 .glass-panel {
@@ -25,6 +26,16 @@ body {
     padding: 30px;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.glass-panel.settings {
+    width: 300px;
+    flex-shrink: 0;
+}
+
+.glass-panel.image-container {
+    width: calc(100% - 340px); /* 300px (ширина настроек) + 20px (отступ) + 20px (отступ с другой стороны) */
+    flex-shrink: 0;
 }
 
 .setting {
@@ -310,28 +321,9 @@ h2 {
     animation: fadeOutScale 0.3s forwards;
 }
 
-.setting {
-    position: relative;
-}
-
-.info-icon {
-    cursor: pointer;
-    margin-left: 5px;
-}
-
-.info-popup {
-    display: none;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 1000;
-    max-width: 200px;
-    top: 100%;
-    left: 0;
-}
-
-.info-icon:hover + .info-popup {
-    display: block;
+.setting-description {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 5px;
+    margin-bottom: 15px;
 }
