@@ -1,105 +1,59 @@
-  <!DOCTYPE html>
-  <html lang="ru">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>ErrorBugLag - Ебанутый разраб</title>
-      <style>
-          body, html {
-              height: 100%;
-              margin: 0;
-              font-family: 'Arial', sans-serif;
-              color: #fff;
-              overflow-x: hidden;
-              background: url('bg.jpg') no-repeat center center fixed;
-              background-size: cover;
-          }
-          .glass-container {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              min-height: 100vh;
-              backdrop-filter: blur(10px);
-              background: rgba(255, 255, 255, 0.1);
-          }
-          .content {
-              background: rgba(255, 255, 255, 0.1);
-              border-radius: 15px;
-              padding: 40px;
-              box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-              backdrop-filter: blur(4px);
-              -webkit-backdrop-filter: blur(4px);
-              border: 1px solid rgba(255, 255, 255, 0.18);
-              max-width: 800px;
-              width: 90%;
-              transition: transform 0.1s ease-out;
-          }
-          h1 {
-              font-size: 3em;
-              margin-bottom: 20px;
-              color: #ff6b6b;
-              text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-          }
-          .avatar {
-              width: 200px;
-              height: 200px;
-              border-radius: 50%;
-              margin: 0 auto 30px;
-              display: block;
-              border: 5px solid rgba(255, 107, 107, 0.5);
-              animation: pulse 2s infinite;
-              box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
-          }
-          @keyframes pulse {
-              0% { transform: scale(1); }
-              50% { transform: scale(1.1); }
-              100% { transform: scale(1); }
-          }
-          a {
-              color: #4ecdc4;
-              text-decoration: none;
-              transition: color 0.3s;
-          }
-          a:hover {
-              color: #ff6b6b;
-              text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
-          }
-      </style>
-  </head>
-  <body>
-      <div class="glass-container">
-          <div class="content">
-              <img src="https://thispersondoesnotexist.com/" alt="ErrorBugLag" class="avatar">
-              <h1>ErrorBugLag</h1>
-              <p>Здарова, ублюдки! Я ErrorBugLag - ебанутый разраб, который творит хуйню и называет это кодом.</p>
-              <p>Мои скиллы:</p>
-              <ul>
-                  <li>Писать говнокод быстрее, чем ты моргаешь</li>
-                  <li>Находить баги там, где их нет</li>
-                  <li>Превращать простые задачи в пиздец</li>
-              </ul>
-              <p>Найти меня можно тут:</p>
-              <ul>
-                  <p>Discord - ErrorBugLag</p>
-                  <li><a href="https://t.me/errorbuglag">Telegram</a> - тут я ною о том, как всё хуёво</li>
-              </ul>
-              <p>Если тебе нужен разраб, который превратит твой проект в полную жопу - я твой выбор!</p>
-          </div>
-      </div>
-      <script>
-        document.addEventListener('mousemove', (e) => {
-            const content = document.querySelector('.content');
-            const rect = content.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            const maxRotation = 5; // Максимальный угол наклона в градусах
-            
-            const rotateY = ((e.clientX - centerX) / (window.innerWidth / 2)) * maxRotation;
-            const rotateX = -((e.clientY - centerY) / (window.innerHeight / 2)) * maxRotation;
-            
-            content.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-      </script>
-  </body>
-  </html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор картинок</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="glass-panel settings">
+            <h2>Настройки</h2>
+            <input type="text" id="prompt" placeholder="Опишите желаемое изображение">
+            <div class="setting resolution-setting">
+                <label for="resolution">Разрешение:</label>
+                <div class="resolution-inputs">
+                    <select id="width" size="3"></select>
+                    <span>x</span>
+                    <select id="height" size="3"></select>
+                </div>
+            </div>                                     
+            <div class="setting">
+                <label for="guidance_scale">Guidance Scale:</label>
+                <input type="range" id="guidance_scale" min="0" max="5" step="0.5" value="1.5">
+                <span id="guidance_scale-value">1.5</span>
+            </div>
+            <div class="setting">
+                <label for="num_inference_steps">Inference Steps:</label>
+                <input type="range" id="num_inference_steps" min="1" max="50" step="1" value="50">
+                <span id="num_inference_steps-value">50</span>
+            </div>
+            <button id="generate">Сгенерировать</button>
+            <button id="api-key-btn" class="api-key-btn">API key</button>
+        </div>        
+        <div class="glass-panel image-container">
+            <img id="result" src="" alt="">
+            <div id="loader" class="loader hidden"><i class="fas fa-spinner fa-spin"></i></div>
+        </div>
+    </div>
+    <div id="api-key-popup" class="popup hidden">
+        <div class="popup-content">
+            <h3>Введите API ключ</h3>
+            <input type="text" id="api-key-input" placeholder="Введите ваш API ключ">
+            <button id="save-api-key">Сохранить</button>
+            <h4>Как получить API ключ:</h4>
+            <ol>
+                <li>Заходим на <a href="https://huggingface.co/" target="_blank">https://huggingface.co/</a></li>
+                <li>Регистрируемся / Логинимся</li>
+                <li><img src="apiguide.jpg" alt="Screenshot" class="guide-image"></li>
+                <li>Ваш профиль -> Settings -> Access Tokens</li>
+                <li>Create New Token -> Write -> Create token</li>
+            </ol>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
