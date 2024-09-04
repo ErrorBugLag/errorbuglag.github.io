@@ -34,8 +34,10 @@ body {
 }
 
 .glass-panel.image-container {
-    width: calc(100% - 340px); /* 300px (ширина настроек) + 20px (отступ) + 20px (отступ с другой стороны) */
+    width: calc(100% - 340px);
     flex-shrink: 0;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .setting {
@@ -116,6 +118,12 @@ img {
     max-height: 70vh;
     border-radius: 10px;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+img.fade-in {
+    opacity: 1;
 }
 
 h2 {
@@ -326,4 +334,43 @@ h2 {
     color: rgba(255, 255, 255, 0.6);
     margin-top: 5px;
     margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7);
+    }
+    
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(52, 152, 219, 0);
+    }
+    
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+    }
+}
+
+.generate-btn {
+    animation: pulse 2s infinite;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
 }

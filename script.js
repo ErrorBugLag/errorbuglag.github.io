@@ -83,7 +83,7 @@ async function generateImage() {
 
     generateButton.disabled = true;
     generateButton.textContent = 'Генерация...';
-    resultImage.style.opacity = '0.5';
+    resultImage.style.opacity = '0';
     loader.classList.remove('hidden');
     toggleImageInfo(false);
 
@@ -110,7 +110,8 @@ async function generateImage() {
         const img = new Image();
         img.onload = () => {
             resultImage.src = imageUrl;
-            resultImage.style.opacity = '1';
+            resultImage.classList.add('fade-in');
+            resultImage.style.opacity = '';
             loader.classList.add('hidden');
             
             imageInfo.innerHTML = `
