@@ -46,6 +46,13 @@ function toggleImageInfo(show) {
     }
 }
 
+async function translateText(text) {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data[0][0][0];
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     toggleImageInfo(false);
     ['num_inference_steps'].forEach(id => {
@@ -83,9 +90,12 @@ async function generateImage() {
     const startTime = performance.now();
 
     try {
+        const translatedPrompt = await translateText(prompt);
+        console.log('Переведенный промпт:', translatedPrompt);
+
         const seed = generateRandomSeed();
         let data = { 
-            "inputs": prompt,
+            "inputs": translatedPrompt,
             "parameters": {
                 "seed": seed,
                 "height": parseInt(document.getElementById('height').value),
@@ -106,6 +116,7 @@ async function generateImage() {
             imageInfo.innerHTML = `
                 <strong>Настройки:</strong><br>
                 Промпт: ${prompt}<br>
+                Переведенный промпт: ${translatedPrompt}<br>
                 Размер: ${data.parameters.width}x${data.parameters.height}<br>
                 Inference Steps: ${data.parameters.num_inference_steps}<br>
                 Seed: ${data.parameters.seed}<br>
@@ -163,4 +174,3 @@ document.getElementById('api-key-popup').addEventListener('click', (e) => {
         hidePopup();
     }
 });
-
