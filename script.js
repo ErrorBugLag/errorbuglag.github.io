@@ -175,3 +175,43 @@ document.getElementById('api-key-popup').addEventListener('click', (e) => {
         hidePopup();
     }
 });
+
+document.addEventListener('touchstart', handleTouchStart, false);
+document.addEventListener('touchmove', handleTouchMove, false);
+
+let xDown = null;
+let yDown = null;
+
+function handleTouchStart(evt) {
+    xDown = evt.touches[0].clientX;
+    yDown = evt.touches[0].clientY;
+}
+
+function handleTouchMove(evt) {
+    if (!xDown || !yDown) {
+        return;
+    }
+
+    let xUp = evt.touches[0].clientX;
+    let yUp = evt.touches[0].clientY;
+
+    let xDiff = xDown - xUp;
+    let yDiff = yDown - yUp;
+
+    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+        if (xDiff > 0) {
+            // Свайп влево
+        } else {
+            // Свайп вправо
+        }
+    } else {
+        if (yDiff > 0) {
+            // Свайп вверх
+        } else {
+            // Свайп вниз
+        }
+    }
+
+    xDown = null;
+    yDown = null;
+}
