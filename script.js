@@ -120,7 +120,7 @@ const generateImage = async (event) => {
         console.log('Переведенный промпт:', translatedPrompt);
 
         const seed = generateRandomSeed();
-        const data = { 
+        const data = {
             "inputs": translatedPrompt,
             "parameters": {
                 "seed": seed,
@@ -136,14 +136,14 @@ const generateImage = async (event) => {
 
         const response = await query(data);
         const imageUrl = URL.createObjectURL(response);
-        
+
         const img = new Image();
         img.onload = () => {
             resultImage.src = imageUrl;
             resultImage.classList.add('fade-in');
             resultImage.style.opacity = '';
             loader.classList.add('hidden');
-            
+
             imageInfo.innerHTML = `
                 <strong>Настройки:</strong><br>
                 Промпт: ${prompt}<br>
