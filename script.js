@@ -51,6 +51,25 @@ const translateText = async (text) => {
     return data[0][0][0];
 };
 
+const adjustImageSize = () => {
+    const img = document.getElementById('result');
+    const container = document.querySelector('.glass-panel.image-container');
+    if (img && container) {
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+        const imgAspectRatio = img.naturalWidth / img.naturalHeight;
+        const containerAspectRatio = containerWidth / containerHeight;
+
+        if (imgAspectRatio > containerAspectRatio) {
+            img.style.width = '100%';
+            img.style.height = 'auto';
+        } else {
+            img.style.width = 'auto';
+            img.style.height = '100%';
+        }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     toggleImageInfo(false);
     ['num_inference_steps'].forEach(id => {
@@ -64,14 +83,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Сброс выбора модели на 'schnell'
     document.querySelector('input[name="model"][value="schnell"]').checked = true;
     selectedModel = 'schnell';
 
-    // Сброс шагов на значение 5
     const stepsInput = document.getElementById('num_inference_steps');
     stepsInput.value = 5;
     updateRangeValue('num_inference_steps');
+
+    window.addEventListener('resize', adjustImageSize);
+    document.getElementById('result').addEventListener('load', adjustImageSize);
 });
 
 const generateImage = async (event) => {
@@ -138,6 +158,7 @@ const generateImage = async (event) => {
             const generationTime = ((endTime - startTime) / 1000).toFixed(2);
             document.getElementById('generation-time').textContent = `Время генерации: ${generationTime} секунд`;
             toggleImageInfo(true);
+            adjustImageSize();
         };
         img.src = imageUrl;
     } catch (error) {
