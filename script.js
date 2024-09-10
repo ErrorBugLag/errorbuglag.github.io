@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedModel = 'schnell';
 
     const stepsInput = document.getElementById('num_inference_steps');
-    stepsInput.value = 5;
+    stepsInput.value = 0;
     updateRangeValue('num_inference_steps');
 
     window.addEventListener('resize', adjustImageSize);
