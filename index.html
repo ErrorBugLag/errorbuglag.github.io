@@ -3,42 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ErrorBugLag FLUX.1 - Генератор изображений на основе ИИ">
+    <meta name="keywords" content="AI, изображения, генерация, FLUX.1">
     <title>ErrorBugLag FLUX.1</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
+    <div id="snowflakes"></div>
     <div class="container">
         <div class="glass-panel settings">
+            <h1>ErrorBugLag FLUX.1</h1>
             <h2>Настройки</h2>
-            <input type="text" id="prompt" placeholder="Опишите желаемое изображение">
-            <div class="model-selection">
-                <div class="model-header">FLUX.1</div>
-                <div class="model-options">
-                    <div class="model-option" data-model="dev">[dev]</div>
-                    <div class="model-option" data-model="schnell">[schnell]</div>
-                </div>
-            </div>                    
-            <div class="setting resolution-setting">
-                <label for="resolution">Разрешение:</label>
-                <div class="resolution-inputs">
-                    <input type="number" id="width" min="1" max="4096" value="1024">
-                    <span>x</span>
-                    <input type="number" id="height" min="1" max="4096" value="1024">
-                </div>
-            </div>            
-            <div class="setting">
-                <label for="num_inference_steps">Шаги генерации:</label>
-                <input type="range" id="num_inference_steps" min="1" max="50" step="1" value="5">
-                <span id="num_inference_steps-value">5</span>
-                <p class="setting-description">Количество шагов для генерации изображения. Больше шагов = лучше качество, но дольше генерация.</p>
-            </div>            
-            <button id="generate">Сгенерировать</button>
+            <form id="generation-form">
+                <textarea id="prompt" placeholder="Опишите желаемое изображение" required></textarea>
+                <div class="model-selection">
+                    <div class="model-header">FLUX.1</div>
+                    <div class="model-options">
+                        <label class="model-option">
+                            <input type="radio" name="model" value="dev">
+                            <span>[dev]</span>
+                        </label>
+                        <label class="model-option">
+                            <input type="radio" name="model" value="schnell" checked>
+                            <span>[schnell]</span>
+                        </label>
+                    </div>
+                </div>                    
+                <div class="setting resolution-setting">
+                    <label for="resolution">Разрешение:</label>
+                    <div class="resolution-inputs">
+                        <input type="number" id="width" min="1" max="4096" value="1024" required>
+                        <span>x</span>
+                        <input type="number" id="height" min="1" max="4096" value="1024" required>
+                    </div>
+                </div>            
+                <div class="setting">
+                    <label for="num_inference_steps">Шаги генерации:</label>
+                    <input type="range" id="num_inference_steps" min="1" max="50" step="1" value="5">
+                    <span id="num_inference_steps-value">5</span>
+                    <p class="setting-description">Количество шагов для генерации изображения. Больше шагов = лучше качество, но дольше генерация.</p>
+                </div>            
+                <button type="submit" id="generate" class="generate-btn">Сгенерировать</button>
+            </form>
             <button id="api-key-btn" class="api-key-btn">API key</button>
         </div>        
         <div class="glass-panel image-container">
-            <img id="result" src="" alt="">
-            <div id="loader" class="loader hidden"><i class="fas fa-spinner fa-spin"></i></div>
+            <img id="result" src="" alt="Сгенерированное изображение">
+            <div id="loader" class="loader hidden"></div>
             <div id="image-info" class="image-info"></div>
             <div id="generation-time" class="generation-time"></div>
         </div>
@@ -50,9 +64,9 @@
             <button id="save-api-key">Сохранить</button>
             <h4>Как получить API ключ:</h4>
             <ol>
-                <li>Заходим на <a href="https://huggingface.co/" target="_blank">https://huggingface.co/</a></li>
+                <li>Заходим на <a href="https://huggingface.co/" target="_blank" rel="noopener noreferrer">https://huggingface.co/</a></li>
                 <li>Регистрируемся / Логинимся</li>
-                <li><img src="apiguide.jpg" alt="Screenshot" class="guide-image"></li>
+                <li><img src="apiguide.jpg" alt="Скриншот инструкции" class="guide-image"></li>
                 <li>Ваш профиль -> Settings -> Access Tokens</li>
                 <li>Create New Token -> Write -> Create token</li>
             </ol>

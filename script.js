@@ -1,14 +1,14 @@
 let apiKey = localStorage.getItem('apiKey') || '';
 const apiKeyInput = document.getElementById('api-key-input');
 
-let selectedModel = 'dev';
+let selectedModel = 'schnell';
 
 const modelUrls = {
     'dev': "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev",
     'schnell': "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
 };
 
-async function query(data) {
+const query = async (data) => {
     const response = await fetch(
         modelUrls[selectedModel],
         {
@@ -20,38 +20,36 @@ async function query(data) {
             body: JSON.stringify(data),
         }
     );
-    const result = await response.blob();
-    return result;
-}
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.blob();
+};
 
-function generateRandomSeed() {
-    return Math.floor(Math.random() * 1000000);
-}
+const generateRandomSeed = () => Math.floor(Math.random() * 1000000);
 
-function updateRangeValue(inputId) {
+const updateRangeValue = (inputId) => {
     const input = document.getElementById(inputId);
     const value = document.getElementById(`${inputId}-value`);
     value.textContent = input.value;
-}
+};
 
-function toggleImageInfo(show) {
+const toggleImageInfo = (show) => {
     const imageInfo = document.getElementById('image-info');
     const generationTime = document.getElementById('generation-time');
-    if (show) {
-        imageInfo.classList.remove('hidden');
-        generationTime.classList.remove('hidden');
-    } else {
-        imageInfo.classList.add('hidden');
-        generationTime.classList.add('hidden');
-    }
-}
+    imageInfo.classList.toggle('hidden', !show);
+    generationTime.classList.toggle('hidden', !show);
+};
 
-async function translateText(text) {
+const translateText = async (text) => {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
     const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const data = await response.json();
     return data[0][0][0];
-}
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     toggleImageInfo(false);
@@ -60,16 +58,15 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('input', () => updateRangeValue(id));
     });
 
-    document.querySelectorAll('.model-option').forEach(option => {
-        option.addEventListener('click', function() {
-            selectedModel = this.dataset.model;
-            document.querySelectorAll('.model-option').forEach(opt => opt.classList.remove('selected'));
-            this.classList.add('selected');
+    document.querySelectorAll('input[name="model"]').forEach(option => {
+        option.addEventListener('change', function() {
+            selectedModel = this.value;
         });
     });
 });
 
-async function generateImage() {
+const generateImage = async (event) => {
+    event.preventDefault();
     const prompt = document.getElementById('prompt').value;
     if (!prompt) {
         alert('Бля, введи хоть что-нибудь в промпт!');
@@ -94,7 +91,7 @@ async function generateImage() {
         console.log('Переведенный промпт:', translatedPrompt);
 
         const seed = generateRandomSeed();
-        let data = { 
+        const data = { 
             "inputs": translatedPrompt,
             "parameters": {
                 "seed": seed,
@@ -139,24 +136,24 @@ async function generateImage() {
         generateButton.disabled = false;
         generateButton.textContent = 'Сгенерировать';
     }
-}
+};
 
-document.getElementById('generate').addEventListener('click', generateImage);
+document.getElementById('generation-form').addEventListener('submit', generateImage);
 
-function showPopup() {
+const showPopup = () => {
     const popup = document.getElementById('api-key-popup');
     popup.classList.remove('hidden', 'hide');
     popup.classList.add('show');
-}
+};
 
-function hidePopup() {
+const hidePopup = () => {
     const popup = document.getElementById('api-key-popup');
     popup.classList.add('hide');
     popup.addEventListener('animationend', function() {
         popup.classList.add('hidden');
         popup.classList.remove('show', 'hide');
     }, { once: true });
-}
+};
 
 document.getElementById('api-key-btn').addEventListener('click', () => {
     apiKey = localStorage.getItem('apiKey') || '';
@@ -176,42 +173,50 @@ document.getElementById('api-key-popup').addEventListener('click', (e) => {
     }
 });
 
-document.addEventListener('touchstart', handleTouchStart, false);
-document.addEventListener('touchmove', handleTouchMove, false);
+const snowflakesContainer = document.getElementById('snowflakes');
+const snowflakesCount = 50;
+const snowflakes = [];
 
-let xDown = null;
-let yDown = null;
-
-function handleTouchStart(evt) {
-    xDown = evt.touches[0].clientX;
-    yDown = evt.touches[0].clientY;
+function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.className = 'snowflake';
+    snowflake.style.width = snowflake.style.height = Math.random() * 4 + 2 + 'px';
+    snowflake.style.left = Math.random() * window.innerWidth + 'px';
+    snowflake.style.top = -10 + 'px';
+    snowflake.speed = Math.random() * 1 + 0.5;
+    snowflakesContainer.appendChild(snowflake);
+    snowflakes.push(snowflake);
 }
 
-function handleTouchMove(evt) {
-    if (!xDown || !yDown) {
-        return;
-    }
-
-    let xUp = evt.touches[0].clientX;
-    let yUp = evt.touches[0].clientY;
-
-    let xDiff = xDown - xUp;
-    let yDiff = yDown - yUp;
-
-    if (Math.abs(xDiff) > Math.abs(yDiff)) {
-        if (xDiff > 0) {
-            // Свайп влево
-        } else {
-            // Свайп вправо
+function moveSnowflakes() {
+    snowflakes.forEach(snowflake => {
+        snowflake.style.top = parseFloat(snowflake.style.top) + snowflake.speed + 'px';
+        if (parseFloat(snowflake.style.top) > window.innerHeight) {
+            snowflake.style.top = -10 + 'px';
+            snowflake.style.left = Math.random() * window.innerWidth + 'px';
         }
-    } else {
-        if (yDiff > 0) {
-            // Свайп вверх
-        } else {
-            // Свайп вниз
-        }
-    }
-
-    xDown = null;
-    yDown = null;
+    });
+    requestAnimationFrame(moveSnowflakes);
 }
+
+for (let i = 0; i < snowflakesCount; i++) {
+    createSnowflake();
+}
+
+moveSnowflakes();
+
+document.addEventListener('mousemove', (e) => {
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    snowflakes.forEach(snowflake => {
+        const rect = snowflake.getBoundingClientRect();
+        const dx = mouseX - rect.left;
+        const dy = mouseY - rect.top;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 100) {
+            const angle = Math.atan2(dy, dx);
+            snowflake.style.left = parseFloat(snowflake.style.left) - Math.cos(angle) * 5 + 'px';
+            snowflake.style.top = parseFloat(snowflake.style.top) - Math.sin(angle) * 5 + 'px';
+        }
+    });
+});
