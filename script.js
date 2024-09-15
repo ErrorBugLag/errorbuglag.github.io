@@ -1,208 +1,28 @@
-let apiKey = localStorage.getItem('apiKey') || '';
-const apiKeyInput = document.getElementById('api-key-input');
-
-let selectedModel = 'schnell';
-
-const modelUrls = {
-    'dev': "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev",
-    'schnell': "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
-};
-
-const query = async (data) => {
-    const response = await fetch(
-        modelUrls[selectedModel],
-        {
-            headers: {
-                "Authorization": `Bearer ${apiKey}`,
-                "Content-Type": "application/json",
-            },
-            method: "POST",
-            body: JSON.stringify(data),
-        }
-    );
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.blob();
-};
-
-const generateRandomSeed = () => Math.floor(Math.random() * 1000000);
-
-const updateRangeValue = (inputId) => {
-    const input = document.getElementById(inputId);
-    const value = document.getElementById(`${inputId}-value`);
-    value.textContent = input.value === "0" ? "Авто" : input.value;
-};
-
-const toggleImageInfo = (show) => {
-    const imageInfo = document.getElementById('image-info');
-    const generationTime = document.getElementById('generation-time');
-    imageInfo.classList.toggle('hidden', !show);
-    generationTime.classList.toggle('hidden', !show);
-};
-
-const translateText = async (text) => {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data[0][0][0];
-};
-
-const adjustImageSize = () => {
-    const img = document.getElementById('result');
-    const container = document.querySelector('.glass-panel.image-container');
-    if (img && container) {
-        const containerWidth = container.clientWidth;
-        const containerHeight = container.clientHeight;
-        const imgAspectRatio = img.naturalWidth / img.naturalHeight;
-        const containerAspectRatio = containerWidth / containerHeight;
-
-        if (imgAspectRatio > containerAspectRatio) {
-            img.style.width = '100%';
-            img.style.height = 'auto';
-        } else {
-            img.style.width = 'auto';
-            img.style.height = '100%';
-        }
-    }
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-    toggleImageInfo(false);
-    ['num_inference_steps'].forEach(id => {
-        const input = document.getElementById(id);
-        input.addEventListener('input', () => updateRangeValue(id));
-    });
-
-    document.querySelectorAll('input[name="model"]').forEach(option => {
-        option.addEventListener('change', function() {
-            selectedModel = this.value;
-        });
-    });
-
-    document.querySelector('input[name="model"][value="schnell"]').checked = true;
-    selectedModel = 'schnell';
-
-    const stepsInput = document.getElementById('num_inference_steps');
-    stepsInput.value = 0;
-    updateRangeValue('num_inference_steps');
-
-    window.addEventListener('resize', adjustImageSize);
-    document.getElementById('result').addEventListener('load', adjustImageSize);
-});
-
-const generateImage = async (event) => {
-    event.preventDefault();
-    const prompt = document.getElementById('prompt').value;
-    if (!prompt) {
-        alert('Бля, введи хоть что-нибудь в промпт!');
-        return;
-    }
-
-    const generateButton = document.getElementById('generate');
-    const resultImage = document.getElementById('result');
-    const loader = document.getElementById('loader');
-    const imageInfo = document.getElementById('image-info');
-
-    generateButton.disabled = true;
-    generateButton.textContent = 'Генерация...';
-    resultImage.style.opacity = '0';
-    loader.classList.remove('hidden');
-    toggleImageInfo(false);
-
-    const startTime = performance.now();
-
-    try {
-        const translatedPrompt = await translateText(prompt);
-        console.log('Переведенный промпт:', translatedPrompt);
-
-        const seed = generateRandomSeed();
-        const data = {
-            "inputs": translatedPrompt,
-            "parameters": {
-                "seed": seed,
-                "height": parseInt(document.getElementById('height').value),
-                "width": parseInt(document.getElementById('width').value)
-            }
-        };
-
-        const steps = parseInt(document.getElementById('num_inference_steps').value);
-        if (steps > 0) {
-            data.parameters.num_inference_steps = steps;
-        }
-
-        const response = await query(data);
-        const imageUrl = URL.createObjectURL(response);
-
-        const img = new Image();
-        img.onload = () => {
-            resultImage.src = imageUrl;
-            resultImage.classList.add('fade-in');
-            resultImage.style.opacity = '';
-            loader.classList.add('hidden');
-
-            imageInfo.innerHTML = `
-                <strong>Настройки:</strong><br>
-                Промпт: ${prompt}<br>
-                Переведенный промпт: ${translatedPrompt}<br>
-                Размер: ${data.parameters.width}x${data.parameters.height}<br>
-                Inference Steps: ${steps > 0 ? steps : 'Авто'}<br>
-                Seed: ${data.parameters.seed}<br>
-                Модель: ${selectedModel}
-            `;
-
-            const endTime = performance.now();
-            const generationTime = ((endTime - startTime) / 1000).toFixed(2);
-            document.getElementById('generation-time').textContent = `Время генерации: ${generationTime} секунд`;
-            toggleImageInfo(true);
-            adjustImageSize();
-        };
-        img.src = imageUrl;
-    } catch (error) {
-        alert('Error: ' + error.message);
-        resultImage.style.opacity = '1';
-        loader.classList.add('hidden');
-        toggleImageInfo(false);
-    } finally {
-        generateButton.disabled = false;
-        generateButton.textContent = 'Сгенерировать';
-    }
-};
-
-document.getElementById('generation-form').addEventListener('submit', generateImage);
-
-const showPopup = () => {
-    const popup = document.getElementById('api-key-popup');
-    popup.classList.remove('hidden', 'hide');
-    popup.classList.add('show');
-};
-
-const hidePopup = () => {
-    const popup = document.getElementById('api-key-popup');
-    popup.classList.add('hide');
-    popup.addEventListener('animationend', function() {
-        popup.classList.add('hidden');
-        popup.classList.remove('show', 'hide');
-    }, { once: true });
-};
-
-document.getElementById('api-key-btn').addEventListener('click', () => {
-    apiKey = localStorage.getItem('apiKey') || '';
-    apiKeyInput.value = apiKey;
-    showPopup();
-});
-
-document.getElementById('save-api-key').addEventListener('click', () => {
-    apiKey = apiKeyInput.value.trim();
-    localStorage.setItem('apiKey', apiKey);
-    hidePopup();
-});
-
-document.getElementById('api-key-popup').addEventListener('click', (e) => {
-    if (e.target.id === 'api-key-popup') {
-        hidePopup();
-    }
-});
+let apiKey=localStorage.getItem('apiKey')||'',selectedModel='schnell',modelUrls={dev:"https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev",schnell:"https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"};const roundTo32=n=>Math.round(n/32)*32,query=async d=>{const r=await fetch(modelUrls[selectedModel],{headers:{Authorization:`Bearer ${apiKey}`,"Content-Type":"application/json"},method:"POST",body:JSON.stringify(d)});if(!r.ok)throw new Error(`HTTP error! status: ${r.status}`);return r.blob()},generateRandomSeed=()=>Math.floor(1e6*Math.random()),updateRangeValue=i=>{const e=document.getElementById(i),t=document.getElementById(`${i}-value`);t.textContent="0"===e.value?"Авто":e.value},toggleImageInfo=s=>{const e=document.getElementById('image-info'),t=document.getElementById('generation-time');e.classList.toggle('hidden',!s),t.classList.toggle('hidden',!s)},translateText=async t=>{const r=await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(t)}`);if(!r.ok)throw new Error(`HTTP error! status: ${r.status}`);return(await r.json())[0][0][0]};document.addEventListener('DOMContentLoaded',()=>{toggleImageInfo(!1),['num_inference_steps'].forEach(e=>{document.getElementById(e).addEventListener('input',()=>updateRangeValue(e))}),document.querySelectorAll('input[name="model"]').forEach(e=>{e.addEventListener('change',function(){selectedModel=this.value})}),document.querySelector('input[name="model"][value="schnell"]').checked=!0,selectedModel='schnell';const e=document.getElementById('num_inference_steps');e.value=0,updateRangeValue('num_inference_steps'),[document.getElementById('width'),document.getElementById('height')].forEach(e=>{e.addEventListener('change',function(){this.value=roundTo32(parseInt(this.value))})}),document.getElementById('prompt').addEventListener('keydown',e=>{"Enter"===e.key&&!e.shiftKey&&(e.preventDefault(),generateImage(new Event('submit')))})});const generateImage=async e=>{e.preventDefault();const t=document.getElementById('prompt').value;if(!t)return void alert('Бля, введи хоть что-нибудь в промпт!');const n=document.getElementById('generate'),o=document.getElementById('result'),a=document.getElementById('loader'),i=document.getElementById('image-info'),d=document.getElementById('image-link');n.disabled=!0,n.textContent='Генерация...',o.style.opacity='0',a.classList.remove('hidden'),toggleImageInfo(!1),d.removeAttribute('href');const r=performance.now();try{const e=await translateText(t),s=generateRandomSeed(),l={inputs:e,parameters:{seed:s,height:roundTo32(parseInt(document.getElementById('height').value)),width:roundTo32(parseInt(document.getElementById('width').value))}},c=parseInt(document.getElementById('num_inference_steps').value);c>0&&(l.parameters.num_inference_steps=c);const m=await query(l),u=URL.createObjectURL(m);o.onload=()=>{o.classList.add('fade-in'),o.style.opacity='',a.classList.add('hidden'),d.href=u,i.innerHTML=`
+                <div class="settings-grid">
+                    <div class="setting-item">
+                        <div class="setting-label">промпт</div>
+                        <div class="setting-value">${t}</div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">Переведенный промпт</div>
+                        <div class="setting-value">${e}</div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">Размер</div>
+                        <div class="setting-value">${l.parameters.width}x${l.parameters.height}</div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">Inference Steps</div>
+                        <div class="setting-value">${c>0?c:'Auto'}</div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">Seed</div>
+                        <div class="setting-value">${l.parameters.seed}</div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-label">Модель</div>
+                        <div class="setting-value">${selectedModel}</div>
+                    </div>
+                </div>
+            `;const n=performance.now(),s=((n-r)/1e3).toFixed(2);document.getElementById('generation-time').textContent=`Время генерации: ${s} секунд`,toggleImageInfo(!0)},o.src=u}catch(e){alert('Error: '+e.message),o.style.opacity='1',a.classList.add('hidden'),toggleImageInfo(!1)}finally{n.disabled=!1,n.textContent='Сгенерировать'}};document.getElementById('generation-form').addEventListener('submit',generateImage);const showPopup=()=>{const e=document.getElementById('api-key-popup');e.classList.remove('hidden','hide'),e.classList.add('show')},hidePopup=()=>{const e=document.getElementById('api-key-popup');e.classList.add('hide'),e.addEventListener('animationend',function(){e.classList.add('hidden'),e.classList.remove('show','hide')},{once:!0})};document.getElementById('api-key-btn').addEventListener('click',()=>{apiKey=localStorage.getItem('apiKey')||'',document.getElementById('api-key-input').value=apiKey,showPopup()}),document.getElementById('save-api-key').addEventListener('click',()=>{apiKey=document.getElementById('api-key-input').value.trim(),localStorage.setItem('apiKey',apiKey),hidePopup()}),document.getElementById('api-key-popup').addEventListener('click',e=>{'api-key-popup'===e.target.id&&hidePopup()});

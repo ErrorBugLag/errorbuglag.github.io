@@ -20,7 +20,16 @@
             <h1>ErrorBugLag FLUX.1</h1>
             <h2>Настройки</h2>
             <form id="generation-form">
-                <textarea id="prompt" placeholder="Опишите желаемое изображение" required></textarea>
+                <div class="prompt-container">
+                    <textarea id="prompt" placeholder="Опишите желаемое изображение" required></textarea>
+                </div>
+                <div class="enhancements-panel">
+                    <label class="switch">
+                        <input type="checkbox" id="enhance-quality">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="switch-label">Улучшить промпт</span>
+                </div>
                 <div class="model-selection">
                     <div class="model-header">FLUX.1</div>
                     <div class="model-options">
@@ -53,11 +62,13 @@
             <button id="api-key-btn" class="api-key-btn">API key</button>
         </div>        
         <div class="glass-panel image-container">
-            <img id="result" src="" alt="Сгенерированное изображение">
+            <a id="image-link" href="#" target="_blank">
+                <img id="result" src="" alt="Сгенерированное изображение">
+            </a>
             <div id="loader" class="loader hidden"></div>
             <div id="image-info" class="image-info"></div>
             <div id="generation-time" class="generation-time"></div>
-        </div>
+        </div>        
     </div>
     <div id="api-key-popup" class="popup hidden">
         <div class="popup-content">
@@ -71,6 +82,6 @@
             <p>Create New Token -> Write -> Create token</p>                 
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
